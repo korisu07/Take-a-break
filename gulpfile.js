@@ -9,7 +9,7 @@ const sass = require("gulp-sass");
 const compileSass = function () {
   //.scssファイルを取得
   return (
-    src("./**/css/*.css")
+    src("**/scss/*.scss")
       // .cssファイルに圧縮済みの設定でコンパイル
       .pipe(
         sass({ outputStyle: "compressed" })
