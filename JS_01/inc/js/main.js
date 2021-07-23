@@ -21,7 +21,7 @@ function loadModulefile( filepath ){
 const JS_files = [
   // index.htmlを基準とした相対パスで指定
   // 例 :'inc/js/viewer/example.js'
-  'inc/js/viewer/globalScope.js'
+  'inc/js/viewer/speechMan.js'
 ];
 
 const JS_module = [
