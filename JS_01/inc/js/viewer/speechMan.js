@@ -23,23 +23,41 @@ function SpeechMan( receivedText ){
   const 
     funcSpeech = new SpeechSynthesisUtterance();
   
-  // 入力されたテキストをセット
-  funcSpeech.text = receivedText;
-  // 言語指定：日本語
-  funcSpeech.lang = 'ja-JP';
-  // 喋ってもらいます★ミ
-  speechSynthesis.speak( funcSpeech );
+    // テキストが入力されている場合に発動
+    if( SpeechManInput.value !== '' ){
+
+      // 入力されたテキストをセット
+      funcSpeech.text = receivedText;
+      // 言語指定：日本語
+      funcSpeech.lang = 'ja-JP';
+      // 喋ってもらいます★ミ
+      speechSynthesis.speak( funcSpeech );
+
+      // 入力された内容を表示
+      outputText( receivedText );
+
+    } //end if.
 
 } // end func textSpeech.
 
+
+// 「しゃべる！」ボタンを押した場合に発動
 SpeechManButton.addEventListener('click', function(){
   
-  if( SpeechManInput.value !== '' ){
+  // しゃべるよ！
+  SpeechMan( SpeechManInput.value );
+
+}); // end addEventListener.
+
+
+// Enterkeyを押しても発動
+document.body.addEventListener('keydown', function( event ){
+  // Enterkeyが押された場合に発動
+  if(event.key === 'Enter'){
+
+    console.log('yeah');
+    // しゃべるよ！
     SpeechMan( SpeechManInput.value );
-    outputText( SpeechManInput.value );
+  } // end if.
 
-  } else {
-
-    outputText( SpeechManOutput.textContent );
-  }
-});
+}); // end addEventListener.
