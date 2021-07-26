@@ -1,105 +1,92 @@
 'use strict';
 
 const 
-  moveElem = document.getElementById('js-moveElem');
+  moveElem = document.getElementById('js-moveElem'),
+  moveElemCSS = getComputedStyle(moveElem, null);
 
 
-// // 読み込み時に、elementの位置をリセット
-// window.addEventListener("DOMContentLoaded", function(){
+function moveEvent(keyEvent, topCSS, leftCSS, moveSpeed = 10){
 
-//   // elementを左下へ リセット
-//   moveElem.style.inset = 'auto auto 0px 0px';
-  
-// });
+  let
+    widthSetting = leftCSS.replace('px', ''),
+    heightSetting = topCSS.replace('px', '');
 
-
-// 返された配列の数によって、指定する配列の順番を変える処理
-function arrayNumberSwitch(length){
-  switch(length){
-    case 1:
-      return {'top': 0, 'left' : 0, 'bottom' : 0, 'right' : 0};
-    case 2:
-      break;
-    case 3:
-      break;
-    case 4:
-      break;
-  }
-}
-
-function moveEvent(keyEvent, insetSetting){
-
-  const 
-    setting = insetSetting.split(' ');
-  console.log(setting);
+    widthSetting = Number(widthSetting);
+    heightSetting = Number(heightSetting);
 
   // キーを判別
   switch(keyEvent){
-    case 'w': 
+
+    // Wキーもしくは上方向キーが押された場合
+    case 'w':
+    case 'ArrowUp': 
 
     let
-      topSetting = setting[0].replace(/auto|px/m, '');
-      topSetting = Number(topSetting);
-      topSetting = topSetting - 10;
+      moveToTop = heightSetting - moveSpeed;
 
-      if(topSetting < 0){
-        topSetting = 0;
+      if(moveToTop < 0){
+        moveToTop = 0;
       }
 
-      console.log(topSetting);
-      moveElem.style.top = `${topSetting}px`;
+      moveElem.style.top = `${moveToTop}px`;
     break;
     
-
-    case 'a': 
+    // Aキーもしくは左方向キーが押された場合
+    case 'a':
+    case 'ArrowLeft': 
 
     let
-      leftSetting = setting[1].replace(/auto|px/m, '');
-      leftSetting = Number(leftSetting);
-      leftSetting = leftSetting - 10;
+      moveToLeft = widthSetting - moveSpeed;
 
-      if(leftSetting < 0){
-        leftSetting = 0;
+      if(moveToLeft < 0){
+        moveToLeft = 0;
       }
 
-      moveElem.style.left = `${leftSetting}px`;
+      moveElem.style.left = `${moveToLeft}px`;
     break;
 
-
-    case 's': 
+    // Sキーもしくは下方向キーが押された場合
+    case 's':
+    case 'ArrowDown': 
     
     let
-      bottomSetting = setting[2].replace(/auto|px/m, '');
-      bottomSetting = Number(bottomSetting);
-      bottomSetting = bottomSetting - 10;
+      moveToBottom = heightSetting + moveSpeed;
 
-      if(bottomSetting < 0){
-        bottomSetting = 0;
+      if(moveToBottom > 475){
+        moveToBottom = 475;
       }
 
-    moveElem.style.bottom = `${bottomSetting}px`;
+    moveElem.style.top = `${moveToBottom}px`;
     break;
 
+    // Dキーもしくは右方向キーが押された場合
+    case 'd':
+    case 'ArrowRight': 
 
-    case 'd': 
-
-    let 
-      rightSetting = setting[3].replace(/auto|px/m, '');
-      rightSetting = Number(rightSetting);
-      rightSetting = rightSetting - 10;
+    let
+      moveToRight = widthSetting + moveSpeed;
       
-      if(rightSetting < 0){
-        rightSetting = 0;
+      if(moveToRight > 615){
+        moveToRight = 615;
       }
 
-    moveElem.style.right = `${rightSetting}px`;
+    moveElem.style.left = `${moveToRight}px`;
     break;
-  };
+  } //end switch
 }
 
 document.body.addEventListener('keydown', function( event ){
-  moveEvent(event.key, getComputedStyle(moveElem, null).getPropertyValue('inset'));
-});
 
-// *test*
-console.log(getComputedStyle(moveElem).getPropertyValue('inset'));
+  // 要素を動かす処理
+  moveEvent(
+
+    // 押されたキーボードキーの値を受け渡す
+    event.key, 
+
+    // 現在のCSS:topプロパティの値を取得
+    moveElemCSS.getPropertyValue('top'),
+    // 現在のCSS:leftプロパティの値を取得
+    moveElemCSS.getPropertyValue('left')
+
+  ); // Finishes executing the "moveEvent" function.
+}); //end addEventListener.
