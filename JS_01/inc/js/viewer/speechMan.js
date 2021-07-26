@@ -54,8 +54,6 @@ SpeechManButton.addEventListener('click', function(){
 document.body.addEventListener('keydown', function( event ){
   // Enterkeyが押された場合に発動
   if(event.key === 'Enter'){
-
-    console.log('yeah');
     // しゃべるよ！
     SpeechMan( SpeechManInput.value );
   } // end if.
