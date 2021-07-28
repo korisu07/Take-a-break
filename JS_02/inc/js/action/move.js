@@ -30,6 +30,7 @@ function inputKeyboard(keyEvent){
 } // end function inputKeyboard.
 
 
+// 移動させる数値を計算する関数
 function calcMoveDistance(keyEvent, widthRenge, heightRenge, moveSpeed = 10){
 
   let
@@ -98,6 +99,8 @@ function calcMoveDistance(keyEvent, widthRenge, heightRenge, moveSpeed = 10){
 
 } // end function calcMoveDistance.
 
+
+// キーが押されたら実行
 document.body.addEventListener('keydown', function( event ){
 
   // 押されたキーと設定で一致するものがあれば発動
