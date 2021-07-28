@@ -27,7 +27,7 @@ function inputKeyboard(keyEvent){
   // 一致した場合のみ、設定名を呼び出し、
   // それ以外の場合は falseを返す
   return result.length > 0 ? result[0].direction : false;
-}
+} // end function inputKeyboard.
 
 
 function calcMoveDistance(keyEvent, widthRenge, heightRenge, moveSpeed = 10){
@@ -45,49 +45,47 @@ function calcMoveDistance(keyEvent, widthRenge, heightRenge, moveSpeed = 10){
 
     // 操作設定
     const PlayerOperationSettings = [
-      // 上へ移動するための設定
-      {
+      
+      { // 上へ移動するための設定
         settingName : 'up',
         action : function(){ 
           const 
             moveToTop = heightSetting - moveSpeed;
 
           return moveToTop > 0 ? moveToTop : 0;
-      }}, //end function top.
-      
-      // 左へ移動するための設定
-      {
+        } // end function.
+      }, // end up setting.
+
+      { // 左へ移動するための設定
         settingName: 'left',
         action : function(){
           const
             moveToLeft = widthSetting - moveSpeed;
 
           return moveToLeft > 0 ? moveToLeft : 0;
-        }
-      }, //end function left.
+        } // end function.
+      }, // end left setting.
 
-      // 下へ移動するための設定
-      {
+      { // 下へ移動するための設定
         settingName : 'down',
         action : function(){
           const
             moveToBottom = heightSetting + moveSpeed;
 
           return moveToBottom < heightRenge ? moveToBottom : heightRenge;
-        }
-      }, //end function bottom.
+        } // end function.
+      }, // end down setting.
 
-      // 右へ移動するための設定
-      {
+      { // 右へ移動するための設定
         settingName : 'right',
         action : function(){
           const
             moveToRight = widthSetting + moveSpeed;
 
           return moveToRight < widthRenge ? moveToRight : widthRenge;
-          }//end function
-      } //end right.
-    ]; //end Array PlayerOperationSettings.
+          }// end function
+      } // end right setting.
+    ]; // end PlayerOperationSettings.
     
 
     // 押されたキーと一致する設定があるかを検索
@@ -95,9 +93,10 @@ function calcMoveDistance(keyEvent, widthRenge, heightRenge, moveSpeed = 10){
       return action.settingName === keyEvent;
     });
 
-    // 名前が一致した設定の関数を実行
-    return result[0].action();
-}
+    // 一致するものがある場合、関数を実行する
+    return result.length > 0 ? result[0].action() : false;
+
+} // end function calcMoveDistance.
 
 document.body.addEventListener('keydown', function( event ){
 
@@ -112,6 +111,6 @@ document.body.addEventListener('keydown', function( event ){
         inputKeyboard(event.key), 615, 475
     
       )); // Finishes executing the "moveEvent" function.
-  }
+  } // end if.
 
-}); //end addEventListener.
+}); // end addEventListener.
