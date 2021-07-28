@@ -5,88 +5,113 @@ const
   moveElemCSS = getComputedStyle(moveElem, null);
 
 
-function moveEvent(keyEvent, topCSS, leftCSS, moveSpeed = 10){
+function inputKeyboard(keyEvent){
+
+  // キーボード設定
+  const keySetting = [
+      {keyboard : 'w', direction : 'up'},
+      {keyboard : 'a', direction : 'left'},
+      {keyboard : 's', direction : 'down'},
+      {keyboard : 'd', direction : 'right'},
+      {keyboard : 'ArrowUp', direction : 'up'},
+      {keyboard : 'ArrowLeft', direction : 'left'},
+      {keyboard : 'ArrowDown', direction : 'down'},
+      {keyboard : 'ArrowRight', direction : 'right'}
+    ];
+
+  // 押されたキーに一致するものを検索
+  const result = keySetting.filter(setting => {
+    return setting.keyboard === keyEvent;
+  });
+
+  // 一致した場合のみ、設定名を呼び出し、
+  // それ以外の場合は falseを返す
+  return result.length > 0 ? result[0].direction : false;
+}
+
+
+function calcMoveDistance(keyEvent, widthRenge, heightRenge, moveSpeed = 10){
 
   let
-    widthSetting = leftCSS.replace('px', ''),
-    heightSetting = topCSS.replace('px', '');
+    // 現在のCSS:topプロパティの値を取得 -> 数値だけ取得
+    widthSetting = moveElemCSS.getPropertyValue('left').replace('px', ''),
+    // 現在のCSS:leftプロパティの値を取得 -> 数値だけ取得
+    heightSetting = moveElemCSS.getPropertyValue('top').replace('px', '');
 
+    // 取得した数値を計算可能な状態に変換
     widthSetting = Number(widthSetting);
     heightSetting = Number(heightSetting);
 
-  // キーを判別
-  switch(keyEvent){
 
-    // Wキーもしくは上方向キーが押された場合
-    case 'w':
-    case 'ArrowUp': 
+    // 操作設定
+    const PlayerOperationSettings = [
+      // 上へ移動するための設定
+      {
+        settingName : 'up',
+        action : function(){ 
+          const 
+            moveToTop = heightSetting - moveSpeed;
 
-    let
-      moveToTop = heightSetting - moveSpeed;
-
-      if(moveToTop < 0){
-        moveToTop = 0;
-      }
-
-      moveElem.style.top = `${moveToTop}px`;
-    break;
-    
-    // Aキーもしくは左方向キーが押された場合
-    case 'a':
-    case 'ArrowLeft': 
-
-    let
-      moveToLeft = widthSetting - moveSpeed;
-
-      if(moveToLeft < 0){
-        moveToLeft = 0;
-      }
-
-      moveElem.style.left = `${moveToLeft}px`;
-    break;
-
-    // Sキーもしくは下方向キーが押された場合
-    case 's':
-    case 'ArrowDown': 
-    
-    let
-      moveToBottom = heightSetting + moveSpeed;
-
-      if(moveToBottom > 475){
-        moveToBottom = 475;
-      }
-
-    moveElem.style.top = `${moveToBottom}px`;
-    break;
-
-    // Dキーもしくは右方向キーが押された場合
-    case 'd':
-    case 'ArrowRight': 
-
-    let
-      moveToRight = widthSetting + moveSpeed;
+          return moveToTop > 0 ? moveToTop : 0;
+      }}, //end function top.
       
-      if(moveToRight > 615){
-        moveToRight = 615;
-      }
+      // 左へ移動するための設定
+      {
+        settingName: 'left',
+        action : function(){
+          const
+            moveToLeft = widthSetting - moveSpeed;
 
-    moveElem.style.left = `${moveToRight}px`;
-    break;
-  } //end switch
+          return moveToLeft > 0 ? moveToLeft : 0;
+        }
+      }, //end function left.
+
+      // 下へ移動するための設定
+      {
+        settingName : 'down',
+        action : function(){
+          const
+            moveToBottom = heightSetting + moveSpeed;
+
+          return moveToBottom < heightRenge ? moveToBottom : heightRenge;
+        }
+      }, //end function bottom.
+
+      // 右へ移動するための設定
+      {
+        settingName : 'right',
+        action : function(){
+          const
+            moveToRight = widthSetting + moveSpeed;
+
+          return moveToRight < widthRenge ? moveToRight : widthRenge;
+          }//end function
+      } //end right.
+    ]; //end Array PlayerOperationSettings.
+    
+
+    // 押されたキーと一致する設定があるかを検索
+    const result = PlayerOperationSettings.filter(action => {
+      return action.settingName === keyEvent;
+    });
+
+    // 名前が一致した設定の関数を実行
+    return result[0].action();
 }
 
 document.body.addEventListener('keydown', function( event ){
 
-  // 要素を動かす処理
-  moveEvent(
+  // 押されたキーと設定で一致するものがあれば発動
+  if( inputKeyboard(event.key) ) {
+    console.log(
+      // 要素を動かす処理
+      calcMoveDistance(
+    
+        // 押されたキーボードキーの値を受け渡す
+        // また、右に移動できる上限と、下に移動できる上限を指定
+        inputKeyboard(event.key), 615, 475
+    
+      )); // Finishes executing the "moveEvent" function.
+  }
 
-    // 押されたキーボードキーの値を受け渡す
-    event.key, 
-
-    // 現在のCSS:topプロパティの値を取得
-    moveElemCSS.getPropertyValue('top'),
-    // 現在のCSS:leftプロパティの値を取得
-    moveElemCSS.getPropertyValue('left')
-
-  ); // Finishes executing the "moveEvent" function.
 }); //end addEventListener.
