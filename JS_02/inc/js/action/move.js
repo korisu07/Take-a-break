@@ -1,10 +1,23 @@
 'use strict';
 
+// 
+// ★ グローバルスコープ
+// 
+
 const 
+  // 動かす要素を取得
   moveElem = document.getElementById('js-moveElem'),
-  moveElemCSS = getComputedStyle(moveElem, null);
+  // 動かす要素のCSSを取得
+  moveElemCSS = getComputedStyle(moveElem, null),
+  
+  // 囲っている要素のCSSを取得
+  mainContentCSS = getComputedStyle( document.getElementById('js-mainContent'), null);
 
+// 
+// ★ 関数
+// 
 
+// キー設定があるかどうかをチェックし、設定を呼び出す関数
 function inputKeyboard(keyEvent){
 
   // キーボード設定
@@ -31,7 +44,7 @@ function inputKeyboard(keyEvent){
 
 
 // 移動させる数値を計算する関数
-function calcMoveDistance(keyEvent, widthRenge, heightRenge, moveSpeed = 10){
+function calcMoveDistance(keyEvent, heightRenge, widthRenge, moveSpeed = 10){
 
   let
     // 現在のCSS:topプロパティの値を取得 -> 数値だけ取得
@@ -44,76 +57,107 @@ function calcMoveDistance(keyEvent, widthRenge, heightRenge, moveSpeed = 10){
     heightSetting = Number(heightSetting);
 
 
-    // 操作設定
-    const PlayerOperationSettings = [
-      
-      { // 上へ移動するための設定
-        settingName : 'up',
-        action : function(){ 
-          const 
-            moveToTop = heightSetting - moveSpeed;
-
-          return moveToTop > 0 ? moveToTop : 0;
-        } // end function.
-      }, // end up setting.
-
-      { // 左へ移動するための設定
-        settingName: 'left',
-        action : function(){
-          const
-            moveToLeft = widthSetting - moveSpeed;
-
-          return moveToLeft > 0 ? moveToLeft : 0;
-        } // end function.
-      }, // end left setting.
-
-      { // 下へ移動するための設定
-        settingName : 'down',
-        action : function(){
-          const
-            moveToBottom = heightSetting + moveSpeed;
-
-          return moveToBottom < heightRenge ? moveToBottom : heightRenge;
-        } // end function.
-      }, // end down setting.
-
-      { // 右へ移動するための設定
-        settingName : 'right',
-        action : function(){
-          const
-            moveToRight = widthSetting + moveSpeed;
-
-          return moveToRight < widthRenge ? moveToRight : widthRenge;
-          }// end function
-      } // end right setting.
-    ]; // end PlayerOperationSettings.
+  // 操作設定
+  const PlayerOperationSettings = [
     
+    { // 上へ移動するための設定
+      settingName : 'up',
+      action : function(){ 
+        const 
+          moveToTop = heightSetting - moveSpeed;
 
-    // 押されたキーと一致する設定があるかを検索
-    const result = PlayerOperationSettings.filter(action => {
-      return action.settingName === keyEvent;
-    });
+        return moveToTop > 0 ? moveToTop : 0;
+      } // end function.
+    }, // end up setting.
 
-    // 一致するものがある場合、関数を実行する
-    return result.length > 0 ? result[0].action() : false;
+    { // 左へ移動するための設定
+      settingName: 'left',
+      action : function(){
+        const
+          moveToLeft = widthSetting - moveSpeed;
+
+        return moveToLeft > 0 ? moveToLeft : 0;
+      } // end function.
+    }, // end left setting.
+
+    { // 下へ移動するための設定
+      settingName : 'down',
+      action : function(){
+        const
+          moveToBottom = heightSetting + moveSpeed;
+
+        return moveToBottom < heightRenge ? moveToBottom : heightRenge;
+      } // end function.
+    }, // end down setting.
+
+    { // 右へ移動するための設定
+      settingName : 'right',
+      action : function(){
+        const
+          moveToRight = widthSetting + moveSpeed;
+
+        return moveToRight < widthRenge ? moveToRight : widthRenge;
+        }// end function
+    } // end right setting.
+  ]; // end PlayerOperationSettings.
+  
+
+  // 押されたキーと一致する設定があるかを検索
+  const result = PlayerOperationSettings.filter(action => {
+    return action.settingName === keyEvent;
+  });
+
+  // 一致するものがある場合、関数を実行する
+  return result.length > 0 ? [result[0].settingName, result[0].action()] : false;
 
 } // end function calcMoveDistance.
 
+
+
+// 実際にプレイヤーを動かす処理
+function movePlayer(setting) {
+
+  // 設定名に一致するものを実行
+  switch(setting[0]){
+    case 'up':
+    case 'down':
+      moveElem.style.top = `${setting[1]}px`;
+      break;
+
+    case 'left':
+    case 'right':
+      moveElem.style.left = `${setting[1]}px`;
+      break;
+
+  } // end switch.
+
+} // end function movePlayer.
+
+
+// 
+// ★ 実行
+// 
 
 // キーが押されたら実行
 document.body.addEventListener('keydown', function( event ){
 
   // 押されたキーと設定で一致するものがあれば発動
   if( inputKeyboard(event.key) ) {
-    console.log(
+    const calcResult = 
       // 要素を動かす処理
       calcMoveDistance(
-    
         // 押されたキーボードキーの値を受け渡す
-        // また、右に移動できる上限と、下に移動できる上限を指定
-        inputKeyboard(event.key), 615, 475
-    
-      )); // Finishes executing the "moveEvent" function.
+        inputKeyboard(event.key), 
+        // また、移動できる上限を指定
+        // 縦
+        475,
+        // 横
+        615
+      ); // end const.
+
+    // プレイヤーを動かす処理を実行
+    movePlayer( calcResult );
+    // Finishes executing the "movePlayer" function.
   } // end if.
 
 }); // end addEventListener.
