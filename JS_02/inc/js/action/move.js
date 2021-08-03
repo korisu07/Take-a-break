@@ -10,8 +10,10 @@ const
   // 動かす要素のCSSを取得
   moveElemCSS = getComputedStyle(moveElem, null),
   
+  // 囲っている要素を取得
+  mainContent = document.getElementById('js-mainContent'),
   // 囲っている要素のCSSを取得
-  mainContentCSS = getComputedStyle( document.getElementById('js-mainContent'), null);
+  mainContentCSS = getComputedStyle( mainContent, null);
 
 // 
 // ★ 関数
@@ -133,6 +135,19 @@ function movePlayer(setting) {
 
 } // end function movePlayer.
 
+// 縦軸に移動する上限を決める関数
+function getHeightLimit( elem, padding = 30 ){
+  // 要素の高さを取得
+  const height = elem.clientHeight;
+  return height - padding;
+} // end function getHeightLimit.
+
+// 横軸に移動する上限を決める関数
+function getWidthLimit( elem, padding = 25 ){
+  // 要素の横幅を取得
+  const width = elem.clientWidth;
+  return width - padding;
+} // end function getWidthLimit.
 
 // 
 // ★ 実行
@@ -147,12 +162,13 @@ document.body.addEventListener('keydown', function( event ){
       // 要素を動かす処理
       calcMoveDistance(
         // 押されたキーボードキーの値を受け渡す
-        inputKeyboard(event.key), 
+        inputKeyboard(event.key),
+
         // また、移動できる上限を指定
         // 縦
-        475,
+        getHeightLimit( mainContent ),
         // 横
-        615
+        getWidthLimit( mainContent )
       ); // end const.
 
     // プレイヤーを動かす処理を実行
