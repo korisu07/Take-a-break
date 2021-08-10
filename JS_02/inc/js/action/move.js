@@ -45,7 +45,8 @@ function inputKeyboard(keyEvent){
 } // end function inputKeyboard.
 
 
-// 移動させる数値を計算する関数
+// ★移動させる数値を計算する関数
+// 設定名と、どの位置に移動させるかを計算した値を返します
 function calcMoveDistance(keyEvent, heightRenge, widthRenge, moveSpeed = 10){
 
   let
@@ -116,7 +117,8 @@ function calcMoveDistance(keyEvent, heightRenge, widthRenge, moveSpeed = 10){
 
 
 
-// 実際にプレイヤーを動かす処理
+// ★実際にプレイヤーを動かす処理
+// Styleを直接設定し、動かしています
 function movePlayer(setting) {
 
   // 設定名に一致するものを実行
